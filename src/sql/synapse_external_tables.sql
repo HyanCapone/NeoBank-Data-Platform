@@ -1,0 +1,4 @@
+-- Aqui ficarão os scripts de criação das tabelas externas, credenciais e Polybase.
+-- Exemplo:
+-- CREATE MASTER KEY ENCRYPTION BY PASSWORD = '...';
+-- CREATE EXTERNAL DATA SOURCE ...
