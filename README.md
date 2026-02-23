@@ -1,7 +1,5 @@
 # NeoBank Data Platform
 
-> **[👾 Lyra's Note]:** Este é o arquivo principal que os recrutadores e outros devs vão ler. A primeira impressão é a que fica.
-
 ## 📌 Visão Geral
 Projeto de Engenharia de Dados simulando o ambiente de um NeoBank. O objetivo é construir uma plataforma de dados moderna na nuvem (Azure), aplicando conceitos de Big Data, processamento distribuído (Apache Spark via Databricks) e Data Warehousing (Azure Synapse Analytics).
 
