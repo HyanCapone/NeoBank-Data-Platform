@@ -50,7 +50,7 @@ Organizamos o código simulando um ambiente produtivo real:
 ├── src/
 │   ├── notebooks/         # Notebooks exportados do Databricks (.ipynb / .py)
 │   ├── sql/               # Scripts DDL/DML, criação de External Tables e Views no Synapse
-│   └── pipelines/         # Arquivos de orquestração (se houver, ex: Data Factory JSONs)
+│   └── pipelines/         # Arquivos de orquestração 
 ├── .gitignore             # Arquivos a serem ignorados pelo Git (.csv pesados, credenciais, etc)
 └── README.md              # Este arquivo!
 ```
