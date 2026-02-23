@@ -1,43 +1,43 @@
-# 💸 FinOps & Scalability: Azure NeoBank Data Platform
+# 💸 FinOps & Escalabilidade: Plataforma de Dados Azure NeoBank
 
-As a Data Engineer, building a platform is only half the battle. Designing it to be cost-effective and understanding when and how it should scale is what defines a mature architecture.
+Como Engenheiro de Dados, construir a plataforma é apenas metade da batalha. Projetá-la para ser eficiente em custos e entender quando e como ela deve escalar é o que define uma arquitetura madura.
 
-Below is the cost estimation and scalability plan for the NeoBank Data Platform, calculated for the **East US 2** region (based on official Azure Pricing limits).
+Abaixo está o plano de estimativa de custos e escalabilidade para a Plataforma de Dados NeoBank, calculado para a região **East US 2** (com base nos limites oficiais de preços do Azure).
 
 ---
 
-## Scenario A: Proof of Concept (POC) / Development
-In a learning or POC environment, costs are kept strictly minimum by using the lowest viable tiers and leveraging auto-termination.
+## Cenário A: Prova de Conceito (POC) / Desenvolvimento
+Em um ambiente de aprendizado ou POC, os custos são mantidos estritamente no mínimo usando as camadas mais básicas viáveis e aproveitando o auto-encerramento (auto-termination).
 
-| Azure Service | Configuration (POC) | Active Usage | Estimated Cost (Monthly) |
+| Serviço Azure | Configuração (POC) | Uso Ativo | Custo Estimado (Mensal) |
 | :--- | :--- | :--- | :--- |
-| **Data Lake Storage Gen2** | Hot Tier, LRS (~1 GB of data) | 24/7 (Storage only) | **~$0.02** |
-| **Azure Databricks** | Standard Tier (All-Purpose Compute)<br>Single Node (`Standard_DS3_v2`)<br>Auto-termination at 30 mins | 10 Hours / Month | **~$5.50** <br>*(~$0.40/DBU + VM)* |
-| **Synapse Analytics** | Dedicated SQL Pool (DW100c)<br>Paused when not in use | 2 Hours / Month | **~$3.02** <br>*(~$1.51/Hour)* |
-| **Total POC Estimated Cost** | **Minimal Viable Architecture** | **~12 Hours of Activity** | **~$8.54 / Month** |
+| **Data Lake Storage Gen2** | Hot Tier, LRS (~1 GB de dados) | 24/7 (Apenas armazenamento) | **~$0.02** |
+| **Azure Databricks** | Standard Tier (All-Purpose Compute)<br>Single Node (`Standard_DS3_v2`)<br>Auto-encerramento em 30 min | 10 Horas / Mês | **~$5.50** <br>*(~$0.40/DBU + VM)* |
+| **Synapse Analytics** | Dedicated SQL Pool (DW100c)<br>Pausado quando não utilizado | 2 Horas / Mês | **~$3.02** <br>*(~$1.51/Hora)* |
+| **Custo Total Estimado (POC)** | **Arquitetura Mínima Viável** | **~12 Horas de Atividade** | **~$8.54 / Mês** |
 
-### FinOps Highlights for POC:
-- **Never leave the Synapse Dedicated Pool running.** Dedicated SQL Pools charge per hour whether you run queries or not. Always PAUSE the pool after your `COPY INTO` operations.
-- **Databricks Auto-Termination:** Configuring clusters to shut down after 30 minutes of inactivity saves hundreds of dollars across a team.
+### Destaques FinOps para a POC:
+- **Nunca deixe o Synapse Dedicated Pool rodando.** Pools SQL Dedicados cobram por hora, quer você execute consultas ou não. SEMPRE PAUSE o pool após suas operações de `COPY INTO`.
+- **Auto-encerramento do Databricks:** Configurar clusters para desligar após 30 minutos de inatividade economiza centenas de dólares em uma equipe.
 
 ---
 
-## Scenario B: Production Real-World MVP & Scalability
-A $9 POC is great, but how much data can this exact same architecture handle in a real-world scenario before it "breaks"?
+## Cenário B: MVP do Mundo Real em Produção & Escalabilidade
+Uma POC de $9 é ótima, mas quantos dados essa exata arquitetura consegue lidar em um cenário do mundo real antes de "quebrar"?
 
-### Current Architecture Limits (The "Basic" Production Setup)
-Even at the lowest configuration (Single Node Databricks + DW100c Synapse), this architecture is remarkably powerful:
-1. **Azure Databricks (`Standard_DS3_v2`):** Can comfortably ingest, transform (SCD-2), and load between **20 GB to 50 GB of new daily data** during a nightly batch window.
-2. **Azure Synapse (DW100c):** Can store **~1 TB of compressed historical Data Warehousing data** (using Clustered Columnstore Indexes) and serve Power BI dashboards to dozens of concurrent users with sub-second latency.
+### Limites da Arquitetura Atual (O Setup "Básico" de Produção)
+Mesmo na configuração mais baixa (Single Node Databricks + DW100c Synapse), esta arquitetura é incrivelmente poderosa:
+1. **Azure Databricks (`Standard_DS3_v2`):** Pode confortavelmente ingerir, transformar (SCD-2) e carregar entre **20 GB a 50 GB de novos dados diários** durante uma janela de lote (batch) noturna.
+2. **Azure Synapse (DW100c):** Pode armazenar **~1 TB de dados históricos comprimidos de Data Warehousing** (usando Índices Clustered Columnstore) e servir dashboards do Power BI para dezenas de usuários simultâneos com latência de sub-segundos.
 
-### When to Scale (The Triggers)
-When the business grows beyond the MVP, you don't rewrite the code. You simply scale the compute natively in Azure.
+### Quando Escalar (Os Gatilhos)
+Quando o negócio cresce além do MVP, você não reescreve o código. Você simplesmente escala a computação nativamente no Azure.
 
-#### 1. When to scale Azure Databricks (Compute Up)
-* **The Trigger:** Your nightly ETL pipeline (Bronze ➔ Silver ➔ Gold) begins to exceed the agreed SLA window (e.g., a process that took 15 minutes now takes 2 hours due to data volume).
-* **The Action:** Move from a *Single Node* cluster to a *Multi-Node Standard Cluster* and enable **Autoscaling** (e.g., Min 2 Workers, Max 8 Workers). Spark's distributed nature will automatically partition the workload across the new nodes.
+#### 1. Quando escalar o Azure Databricks (Compute Up)
+* **O Gatilho:** Seu pipeline ETL noturno (Bronze ➔ Silver ➔ Gold) começa a exceder a janela de SLA acordada (ex: um processo que levava 15 minutos agora leva 2 horas devido ao volume de dados).
+* **A Ação:** Mude de um cluster *Single Node* para um *Multi-Node Standard Cluster* e habilite o **Autoscaling** (ex: Min 2 Workers, Max 8 Workers). A natureza distribuída do Spark particionará automaticamente a carga de trabalho pelos novos nós.
 
-#### 2. When to scale Azure Synapse Analytics (DWU Up)
-* **The Trigger (Concurrency):** You have hundreds of BI Analysts or automated reporting tools firing complex queries simultaneously, causing queries to queue.
-* **The Trigger (Ad-Hoc Slowness):** Complex analytical queries over unpartitioned massive historical data begin to lag. In a DW100c, you only have **1 Compute Node** managing all 60 of Synapse's internal distributions.
-* **The Action:** Move the slider to **DW400c** or **DW500c**. At DW400c, Azure spins up 4 dedicated Compute Nodes behind the scenes, meaning each node is only responsible for querying 15 distributions in parallel, drastically cutting down query times across billions of rows.
+#### 2. Quando escalar o Azure Synapse Analytics (DWU Up)
+* **O Gatilho (Concorrência):** Você tem centenas de Analistas de BI ou ferramentas de relatórios automatizados disparando consultas complexas simultaneamente, fazendo com que as consultas entrem em fila de espera.
+* **O Gatilho (Lentidão Ad-Hoc):** Consultas analíticas complexas sobre dados históricos massivos não particionados começam a ficar lentas. Em um DW100c, você tem apenas **1 Compute Node** gerenciando todas as 60 distribuições internas do Synapse.
+* **A Ação:** Mova o controle deslizante para **DW400c** ou **DW500c**. No DW400c, o Azure ativa 4 Compute Nodes dedicados nos bastidores, o que significa que cada nó é responsável por consultar apenas 15 distribuições em paralelo, reduzindo drasticamente o tempo de consulta em bilhões de linhas.

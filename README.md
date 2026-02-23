@@ -7,7 +7,7 @@ Projeto de Engenharia de Dados simulando o ambiente de um NeoBank. O objetivo é
 
 Utilizamos a arquitetura medalhão para garantir a qualidade e governança dos dados em diferentes estágios de refinamento.
 
-👉 💸 **FinOps & Scalability:** Developed with an eye on Cost-Efficiency and Enterprise limits. Check our [Cost Estimation and Scalability Outline](docs/cost_estimation_and_scale.md) to understand how this POC runs for **$8.54/month**, and exactly when the architecture should scale computation units (DWUs and Spark Workers) for real-world Production Data Volumes.
+👉 💸 **FinOps & Escalabilidade:** Desenvolvido com foco em Custo-Eficiência e limites corporativos (Enterprise). Confira nosso [Esboço de Estimativa de Custos e Escalabilidade](docs/cost_estimation_and_scale.md) para entender como essa POC roda por **$8.54/mês**, e exatamente quando a arquitetura deve escalar suas unidades de computação (DWUs e Spark Workers) para volumes de dados reais em Produção mínima.
 
 ```mermaid
 graph TD
